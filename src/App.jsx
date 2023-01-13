@@ -1,34 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState, useTransition } from "react"
+import reactLogo from "./assets/react.svg"
+import "./App.css"
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [isPending, startTransition] = useTransition()
+    const [input, setInput] = useState("")
+    const [list, setList] = useState([])
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    const LIST_SIZE = 20000
+
+    function handleChange(e) {
+        setInput(e.target.value)
+         //setTransition includes low priority code
+        startTransition(() => {
+            const l = []
+            for (let i = 0; i < LIST_SIZE; i++) {
+                l.push(e.target.value)
+            }
+            setList(l)
+        })
+    }
+    return (
+        <div className="App">
+            <input type="text" value={input} onChange={handleChange} />
+            {isPending ? (
+                <h4>Loading...</h4>
+            ) : (
+                list.map((item, index) => {
+                    return <div key={index}>{item}</div>
+                })
+            )}
+        </div>
+    )
 }
 
 export default App
