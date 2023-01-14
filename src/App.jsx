@@ -1,35 +1,15 @@
-import { useState, useTransition } from "react"
-import reactLogo from "./assets/react.svg"
-import "./App.css"
+import React, { useRef, useState } from "react"
+import CustomInput from "./CustomInput"
+import List from "./List"
 
 function App() {
-    const [isPending, startTransition] = useTransition()
-    const [input, setInput] = useState("")
-    const [list, setList] = useState([])
-
-    const LIST_SIZE = 20000
-
-    function handleChange(e) {
-        setInput(e.target.value)
-         //setTransition includes low priority code
-        startTransition(() => {
-            const l = []
-            for (let i = 0; i < LIST_SIZE; i++) {
-                l.push(e.target.value)
-            }
-            setList(l)
-        })
-    }
+   const [value,setValue]= useState('red')
+   const inputRef=useRef()
     return (
-        <div className="App">
-            <input type="text" value={input} onChange={handleChange} />
-            {isPending ? (
-                <h4>Loading...</h4>
-            ) : (
-                list.map((item, index) => {
-                    return <div key={index}>{item}</div>
-                })
-            )}
+        <div>
+         <CustomInput ref={inputRef} value={value} onChange={e=>setValue(e.target.value)}/>
+         <br />
+         <button onClick={()=>inputRef.current.alertHi()}>Focus</button>
         </div>
     )
 }
